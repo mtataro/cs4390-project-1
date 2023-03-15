@@ -1,5 +1,6 @@
 # http://localhost:8888/www.neverssl.com
 # to run: python3 ProxyServer.py
+
 from socket import *
 
 # Create a server socket, bind it to a port and start listening
@@ -14,7 +15,7 @@ while 1:
     tcpCliSock, addr = tcpSerSock.accept()
     print("Received a connection from:", addr)
     message = tcpCliSock.recv(1024)
-    print(message)
+    # print(message)
 
     # Extract the filename from the given message
     print(message.split()[1])
@@ -26,7 +27,6 @@ while 1:
         f = open(filetouse[1:], "r")
         outputdata = f.readlines()
         print("file exists", filetouse)
-
         fileExist = "true"
         # ProxyServer finds a cache hit and generates a response message
         tcpCliSock.send(b"HTTP/1.0 200 OK\r\n")
@@ -34,20 +34,21 @@ while 1:
 
         # Fill in start.
         for i in range(0, len(outputdata)):
-            print(outputdata[i])
+            # print(outputdata[i])
             tcpCliSock.send(outputdata[i].encode())
         # Fill in end.
 
         print("Read from cache")
     # Error handling for file not found in cache
     except IOError:
+        print("IOerror")
         if fileExist == "false":
             # Create a socket on the proxyserver
             c = socket(AF_INET, SOCK_STREAM)
             hostn = filename.replace(
                 "www.", "", 1
             )  # this replace action may not be needed
-            print(hostn)
+            # print(hostn)
             try:
                 # Connect to the socket to port (80 or whatever it is)
                 # Fill in start.
